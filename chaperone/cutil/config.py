@@ -7,6 +7,12 @@ from copy import deepcopy
 from itertools import chain
 
 import yaml
+
+try:
+    from yaml import CLoader as Loader, CDumper as Dumper
+except ImportError:
+    from yaml import Loader, Dumper
+
 import voluptuous as V
 
 from chaperone.cutil.env import Environment, ENV_CONFIG_DIR, ENV_SERVICE
@@ -512,10 +518,10 @@ class Configuration(object):
 
         for fn in args:
             if os.path.exists(fn):
-                self._merge(yaml.load(open(fn, 'r').read().expandtabs()))
+                self._merge(yaml.load(open(fn, 'r').read().expandtabs(),Loader=Loader))
         
         if not self._conf and default:
-            self._conf = lazydict(yaml.load(default))
+            self._conf = lazydict(yaml.load(default,Loader=Loader))
 
         validator(self._conf)
 
