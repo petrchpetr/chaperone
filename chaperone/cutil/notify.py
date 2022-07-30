@@ -1,4 +1,8 @@
 import asyncio
+try: 
+    ensure_future = getattr(asyncio, 'async')
+except:
+    ensure_future = getattr(asyncio, 'ensure_future')
 import socket
 import os
 import re
@@ -153,7 +157,7 @@ class NotifySink:
         self._sent.add(name)
         if self._client:
             debug("queueing '{0}={1}' to notify socket '{2}'".format(name, val, self._client.socket_name))
-            asyncio.async(self._do_send("{0}={1}".format(name, val)))
+            ensure_future(self._do_send("{0}={1}".format(name, val)))
 
     @asyncio.coroutine
     def _do_send(self, msg):

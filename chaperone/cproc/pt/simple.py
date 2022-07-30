@@ -1,4 +1,8 @@
 import asyncio
+try: 
+    ensure_future = getattr(asyncio, 'async')
+except:
+    ensure_future = getattr(asyncio, 'ensure_future')
 from chaperone.cproc.subproc import SubProcess
 
 class SimpleProcess(SubProcess):
@@ -21,7 +25,7 @@ class SimpleProcess(SubProcess):
 
         # We have a successful start.  Monitor this service.
 
-        self._fut_monitor = asyncio.async(self._monitor_service())
+        self._fut_monitor = ensure_future(self._monitor_service())
         self.add_pending(self._fut_monitor)
 
     @asyncio.coroutine

@@ -2,6 +2,10 @@ import os
 import pwd
 import errno
 import asyncio
+try: 
+    ensure_future = getattr(asyncio, 'async')
+except:
+    ensure_future = getattr(asyncio, 'ensure_future')
 import shlex
 import signal
 import datetime
@@ -229,7 +233,7 @@ class TopLevelProcess(objectplus):
 
         warn("Request made to kill system." + ((force and " (forced)") or ""))
         self._killing_system = True
-        self._kill_future = asyncio.async(self._kill_system_co())
+        self._kill_future = ensure_future(self._kill_system_co())
 
     def _cancel_pending(self):
         "Cancel any pending activated tasks"
@@ -289,7 +293,7 @@ class TopLevelProcess(objectplus):
         self._pending.discard(future)
 
     def activate(self, cr):
-       future = asyncio.async(cr)
+       future = ensure_future(cr)
        future.add_done_callback(self.activate_result)
        self._pending.add(future)
        return future
@@ -341,7 +345,7 @@ class TopLevelProcess(objectplus):
         to tailor the environment and start up other services as needed.
         """
 
-        initfuture = asyncio.async(self._start_system_services())
+        initfuture = ensure_future(self._start_system_services())
         initfuture.add_done_callback(lambda f: self._system_started(startup_coro, f))
 
         self.loop.run_forever()

@@ -53,6 +53,10 @@ import os
 import re
 import signal
 import asyncio
+try: 
+    ensure_future = getattr(asyncio, 'async')
+except:
+    ensure_future = getattr(asyncio, 'ensure_future')
 import shlex
 from functools import partial
 from docopt import docopt
@@ -175,7 +179,7 @@ class SDNotifyExec:
         yield from self.parent_client.send("{0}={1}".format(name, value))
 
     def send_to_proxy(self, name, value):
-        asyncio.async(self._do_proxy_send(name, value))
+        ensure_future(self._do_proxy_send(name, value))
 
     def notify_received(self, which, name, value):
         self.send_to_proxy(name, value)
@@ -217,7 +221,7 @@ class SDNotifyExec:
         proc = yield from create
 
         if self.timeout:
-            asyncio.async(self._notify_timeout())
+            ensure_future(self._notify_timeout())
 
         exitcode = yield from proc.wait()
         if not self.exitcode:   # may have arrived from ERRNO
@@ -248,7 +252,7 @@ def main_entry():
     options = docopt(__doc__, options_first=True, version=VERSION_MESSAGE)
 
     mainclass = SDNotifyExec(options)
-    asyncio.async(mainclass.run())
+    ensure_future(mainclass.run())
 
     loop.run_forever()
     loop.close()

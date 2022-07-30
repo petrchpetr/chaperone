@@ -1,5 +1,9 @@
 import os
 import asyncio
+try: 
+    ensure_future = getattr(asyncio, 'async')
+except:
+    ensure_future = getattr(asyncio, 'ensure_future')
 from copy import copy
 from chaperone.cutil.logging import error, warn, debug, info
 from chaperone.cproc.subproc import SubProcess
@@ -17,7 +21,7 @@ class InetdServiceProtocol(ServerProtocol):
         self._fd = sock.detach()
         sock.close()
 
-        future = asyncio.async(self.start_socket_process(self._fd))
+        future = ensure_future(self.start_socket_process(self._fd))
         future.add_done_callback(self._done)
 
         self.process.counter += 1

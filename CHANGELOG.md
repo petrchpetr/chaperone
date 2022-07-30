@@ -1,3 +1,7 @@
+## 0.3.10 (2022-07-30)
+
+By petrch@gmail.com - make it python 3.7+ compatible - replace asyncio.async with ensure_future, provide a loader for pyyaml . 
+
 ## 0.3.00 (2015-10-04)
 
 This is a major release that adds a number of important features and refinements.   Most importantly, a new automated test harness that simulates various process mixes has been added to the release process to assure that Chaperone manages processes in a consistent and reliable way from release to release.

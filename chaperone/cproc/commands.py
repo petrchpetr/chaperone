@@ -1,5 +1,9 @@
 import os
 import asyncio
+try: 
+    ensure_future = getattr(asyncio, 'async')
+except:
+    ensure_future = getattr(asyncio, 'ensure_future')
 import stat
 import shlex
 from functools import partial
@@ -224,11 +228,11 @@ class CommandProtocol(ServerProtocol):
 
     def data_received(self, data):
         if self.interactive:
-            asyncio.async(self._command_task(data.decode(), True))
+            ensure_future(self._command_task(data.decode(), True))
         else:
             commands = data.decode().split("\n")
             for c in commands:
-                asyncio.async(self._command_task(c))
+                ensure_future(self._command_task(c))
 
 class _InteractiveServer(Server):
 

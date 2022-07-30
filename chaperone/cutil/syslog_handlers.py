@@ -2,7 +2,10 @@ import sys
 import os
 import socket
 import asyncio
-
+try: 
+    ensure_future = getattr(asyncio, 'async')
+except:
+    ensure_future = getattr(asyncio, 'ensure_future')
 from time import time, localtime, strftime
 
 from chaperone.cutil.misc import lazydict, open_foruser
@@ -133,7 +136,7 @@ class RemoteHandler(LogOutput):
 
     def __init__(self, config):
         super().__init__(config)
-        self._pending = asyncio.async(self.setup_handler())
+        self._pending = ensure_future(self.setup_handler())
 
     def write(self, data):
         if self._protocol:
