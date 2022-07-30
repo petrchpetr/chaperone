@@ -1,3 +1,6 @@
 build/*
 chaperone.egg*
 dist/*
+chaperone/exec/__pycache__/*
+.venv*
+.vscode
